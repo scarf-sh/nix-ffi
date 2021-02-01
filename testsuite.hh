@@ -4,9 +4,11 @@
 
 using namespace nix;
 
-struct CmdTestsuite : NixMultiCommand
+class CmdTestsuite : public NixMultiCommand
 {
-    CmdTestsuite();
+    std::optional<Path> testRoot;
     std::string description() override;
     void run() override;
+public:
+    CmdTestsuite();
 };
