@@ -14,11 +14,28 @@ This project attempts to bridge that gap, by providing C++ tools, compiled again
 
 No, and hopefully it never will be. If this proves useful and successful, it would be much better to upstream these capabilities directly into Nix itself, or even better refactor it to allow a proper FFI.
 
-## What capabilities do you expose?
+## Install
 
-Currently none, as this is the initial commit! However, the initial plan, based on our current needs at [Scarf](https://about.scarf.sh), is to include:
+nix-fci is built as a typical cmake project. Its direct dependencies are:
 
-- Tooling to set up and use an isolated Nix store for automated test-suties
-- Temporary gc-root management
+- Nix (new enough to contain [this PR](https://github.com/NixOS/nix/pull/4486))
+- pkg-config
+- boost
+- nlohmann_json
 
-More functionality will be added as-needed, either by us or actual users when we have them.
+The output will contain `lib/nix/plugins/libnix-fci.so`.
+
+## Usage
+
+The FCI is exposed as a Nix plugin adding subcommands to the `nix` command. As such, your Nix settings (whether specified through config file or command line) must satisfy the following:
+
+- `experimental-features` must include `nix-command`
+- `plugin-files` must include the full path to `libnix-fci.so` or to a directory containing it.
+
+You will then be able to run `nix fci` and its subcommands.
+
+### testsuite
+
+Usage: `nix fci testsuite --test-root DIR run --command PROG ARG ARG...`
+
+Run `PROG` with the given `ARG`s in an environment where nix commands are isolated to a store rooted at `DIR`. Intended for project testsuites that want to confirm proper nix store interaction without polluting the user's store.
