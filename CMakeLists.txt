@@ -19,7 +19,7 @@ if(APPLE)
   set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -flat_namespace -undefined suppress")
 endif()
 
-add_library(nix-fci MODULE main.cc testsuite.cc)
+add_library(nix-fci MODULE main.cc)
 target_include_directories(nix-fci PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(nix-fci PRIVATE ${NIX_INCLUDE_DIRS})
 target_include_directories(nix-fci PRIVATE ${BOOST_INCLUDE_DIR})
