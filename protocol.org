@@ -1,0 +1,5 @@
+TODO handshake, schema, stderr
+1. Send 0 byte (add temproot)
+2. Send size_t of baseName
+3. Send baseName (no null byte)
+4. Recieve null byte
