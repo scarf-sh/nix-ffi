@@ -7,7 +7,7 @@ using namespace nix;
 
 const static char ok = '\0';
 
-class CmdFfid : public StoreCommand
+class CmdFfiHelper : public StoreCommand
 {
     FdSource in = STDIN_FILENO;
     FdSink out = STDOUT_FILENO;
@@ -38,8 +38,8 @@ class CmdFfid : public StoreCommand
 
     std::string description() override
     {
-        return "the Nix FFI daemon";
+        return "the Nix FFI helper";
     }
 };
 
-static auto r1 = registerCommand<CmdFfid>("ffid");
+static auto r1 = registerCommand<CmdFfiHelper>("ffi-helper");

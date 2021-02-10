@@ -1,4 +1,4 @@
-# nix-fci
+# nix-ffi
 
 A foreign command-line interface to [Nix](https://nixos.org/).
 
