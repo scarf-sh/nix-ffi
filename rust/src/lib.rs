@@ -1,3 +1,6 @@
+// TODO docs
+// TODO events
+
 use libc::c_char;
 use libc::size_t;
 use nix;
@@ -170,9 +173,8 @@ pub enum NewNixError {
 }
 
 impl Nix {
-    // Known issues:
-    // 1. Blocking waitpid, pipe read
-    // 2. Technically racy fork/wait
+    // TODO make these non-blocking, integrable into event loops
+    // TODO Technically racy fork/wait
     pub fn new<AI, S, EI, K, V>(cfg: NixConfig<AI, S, EI, K, V>) -> Result<Self, NewNixError>
     where
         for<'a> &'a AI: IntoIterator<Item = &'a S>,
@@ -274,7 +276,8 @@ impl Nix {
         }
     }
 
-    // Error handling
+    // TODO Error handling
+    // TODO nonblocking
     pub fn add_temproot(&mut self, base_name: &OsStr) -> Result<(), io::Error> {
         let base_name_slice = base_name.as_bytes();
         let base_name_len: size_t = base_name_slice.len();
