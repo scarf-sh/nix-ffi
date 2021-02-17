@@ -30,6 +30,7 @@ class CmdFfiHelper : public StoreCommand
                 in(buf.data(), len);
                 store->addTempRoot(StorePath(std::string_view(buf.data(), len)));
                 out(std::string_view(&ok, sizeof ok));
+                out.flush();
             } else {
                 throw Error("unknown command byte %c%", command);
             }
