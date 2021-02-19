@@ -1,29 +1,46 @@
 #include <config.h>
 #include <command.hh>
-#include "testsuite.hh"
+
+#define ADD_TEMPROOT 0
 
 using namespace nix;
 
-struct CmdFci : NixMultiCommand
+const static char ok = '\0';
+
+class CmdFfiHelper : public StoreCommand
 {
-    CmdFci() : MultiCommand({
-            { "testsuite", [](){ return make_ref<CmdTestsuite>(); } }
-        })
+    FdSource in = STDIN_FILENO;
+    FdSink out = STDOUT_FILENO;
+
+    void run(ref<Store> store) override
     {
+        vector<char> buf(4096);
+        while (true) {
+            char command;
+            try {
+                in(&command, sizeof command);
+            } catch (EndOfFile &){
+                break;
+            }
+            if (command == ADD_TEMPROOT) {
+                size_t len;
+                in((char *) &len, sizeof len);
+                if (len > buf.size())
+                    buf.resize(len);
+                in(buf.data(), len);
+                store->addTempRoot(StorePath(std::string_view(buf.data(), len)));
+                out(std::string_view(&ok, sizeof ok));
+                out.flush();
+            } else {
+                throw Error("unknown command byte %c%", command);
+            }
+        }
     }
 
     std::string description() override
     {
-        return "programmatic access to Nix primitives";
-    }
-
-    void run() override
-    {
-        if (!command)
-            throw UsageError("no fci subcommand specified");
-        command->second->prepare();
-        command->second->run();
+        return "the Nix FFI helper";
     }
 };
 
-static auto r1 = registerCommand<CmdFci>("fci");
+static auto r1 = registerCommand<CmdFfiHelper>("ffi-helper");
